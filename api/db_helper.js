@@ -5,7 +5,13 @@ let client;
 
 function getClient() {
   if (!client) {
-    client = createClient();
+    const connectionString = process.env.POSTGRES_URL || process.env.POSTGRES_URL_NON_POOLING;
+    if (!connectionString) {
+      throw new Error('No PostgreSQL connection string found in environment variables POSTGRES_URL or POSTGRES_URL_NON_POOLING');
+    }
+    client = createClient({
+      connectionString: connectionString
+    });
   }
   return client;
 }
@@ -26,7 +32,13 @@ module.exports = {
   },
   // Helper for getting a fresh client (for transactions)
   getFreshClient: async () => {
-    const freshClient = createClient();
+    const connectionString = process.env.POSTGRES_URL || process.env.POSTGRES_URL_NON_POOLING;
+    if (!connectionString) {
+      throw new Error('No PostgreSQL connection string found in environment variables POSTGRES_URL or POSTGRES_URL_NON_POOLING');
+    }
+    const freshClient = createClient({
+      connectionString: connectionString
+    });
     await freshClient.connect();
     return freshClient;
   }
