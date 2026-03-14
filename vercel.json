@@ -1,9 +1,4 @@
 {
-  "functions": {
-    "api/**/*.php": {
-      "runtime": "now-php@3.0.0"
-    }
-  },
   "rewrites": [
     {
       "source": "/api/(.*)",
