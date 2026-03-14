@@ -2,28 +2,28 @@ const { query } = require('./db_helper');
 const crypto = require('crypto');
 
 module.exports = async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-
-  if (req.method === 'OPTIONS') return res.status(200).end();
-
-  const action = req.query.action || req.body.action;
-
   try {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+    if (req.method === 'OPTIONS') return res.status(200).end();
+
+    const action = req.query.action || (req.body && req.body.action);
+
     switch (action) {
-      case 'get_stats': return handleGetStats(req, res);
-      case 'get_users': return handleGetUsers(req, res);
-      case 'add_user': return handleAddUser(req, res);
-      case 'get_medicines': return handleGetMedicines(req, res);
-      case 'add_medicine': return handleAddMedicine(req, res);
-      case 'assign_medicine': return handleAssignMedicine(req, res);
-      case 'get_all_diary': return handleGetAllDiary(req, res);
-      case 'delete_diary': return handleDeleteDiary(req, res);
+      case 'get_stats': return await handleGetStats(req, res);
+      case 'get_users': return await handleGetUsers(req, res);
+      case 'add_user': return await handleAddUser(req, res);
+      case 'get_medicines': return await handleGetMedicines(req, res);
+      case 'add_medicine': return await handleAddMedicine(req, res);
+      case 'assign_medicine': return await handleAssignMedicine(req, res);
+      case 'get_all_diary': return await handleGetAllDiary(req, res);
+      case 'delete_diary': return await handleDeleteDiary(req, res);
       default: return res.status(404).json({ success: false, message: 'Invalid admin action: ' + action });
     }
   } catch (error) {
-    console.error(`Admin action ${action} error:`, error);
+    console.error('Global admin handler error:', error);
     return res.status(500).json({ success: false, message: 'Server error: ' + error.message });
   }
 };
@@ -57,7 +57,7 @@ async function handleGetUsers(req, res) {
 }
 
 async function handleAddUser(req, res) {
-  const { name, username, password, role } = req.body;
+  const { name, username, password, role } = req.body || {};
   const hash = crypto.createHash('sha256').update(password).digest('hex');
   try {
     await query('INSERT INTO users (name, username, password, role) VALUES (?, ?, ?, ?)', [name, username, hash, role]);
@@ -74,7 +74,7 @@ async function handleGetMedicines(req, res) {
 }
 
 async function handleAddMedicine(req, res) {
-  const { medicine_name } = req.body;
+  const { medicine_name } = req.body || {};
   try {
     await query('INSERT INTO medicines (medicine_name) VALUES (?)', [medicine_name]);
     return res.status(201).json({ success: true, message: 'Medicine added' });
@@ -85,7 +85,7 @@ async function handleAddMedicine(req, res) {
 }
 
 async function handleAssignMedicine(req, res) {
-  const { user_id, medicine_id, quantity } = req.body;
+  const { user_id, medicine_id, quantity } = req.body || {};
   const check = await query('SELECT id FROM user_medicines WHERE user_id = ? AND medicine_id = ?', [user_id, medicine_id]);
   if (check.rowCount > 0) {
     await query('UPDATE user_medicines SET quantity = quantity + ? WHERE user_id = ? AND medicine_id = ?', [quantity, user_id, medicine_id]);
@@ -104,7 +104,7 @@ async function handleGetAllDiary(req, res) {
 }
 
 async function handleDeleteDiary(req, res) {
-  const { entry_id } = req.body;
+  const { entry_id } = req.body || {};
   const result = await query('DELETE FROM diary_entries WHERE id = ?', [entry_id]);
   return res.status(result.rowCount > 0 ? 200 : 404).json({ success: result.rowCount > 0, message: result.rowCount > 0 ? 'Deleted' : 'Not found' });
 }

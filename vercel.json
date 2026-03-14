@@ -6,6 +6,10 @@
     { "source": "/service-worker.js", "destination": "/public/service-worker.js" },
     { "source": "/assets/(.*)", "destination": "/public/assets/$1" },
     
+    { "source": "/icons/icon-192.png", "destination": "/public/assets/icons/icon-192x192.png" },
+    { "source": "/icons/icon-512.png", "destination": "/public/assets/icons/icon-512x512.png" },
+    { "source": "/icons/(.*)", "destination": "/public/assets/icons/$1" },
+
     { "source": "/api/login.js", "destination": "/api/auth.js?action=login" },
     { "source": "/api/logout.js", "destination": "/api/auth.js?action=logout" },
     
