@@ -1,58 +1,13 @@
 {
   "functions": {
-    "api/login.php": {
-      "runtime": "@vercel/php"
-    },
-    "api/logout.php": {
-      "runtime": "@vercel/php"
-    },
-    "api/add_user.php": {
-      "runtime": "@vercel/php"
-    },
-    "api/add_medicine.php": {
-      "runtime": "@vercel/php"
-    },
-    "api/assign_medicine.php": {
-      "runtime": "@vercel/php"
-    },
-    "api/get_user_medicines.php": {
-      "runtime": "@vercel/php"
-    },
-    "api/take_medicine.php": {
-      "runtime": "@vercel/php"
-    },
-    "api/get_logs.php": {
-      "runtime": "@vercel/php"
-    },
-    "api/add_diary.php": {
-      "runtime": "@vercel/php"
-    },
-    "api/get_diary.php": {
-      "runtime": "@vercel/php"
-    },
-    "api/delete_diary.php": {
-      "runtime": "@vercel/php"
-    },
-    "api/get_admin_stats.php": {
-      "runtime": "@vercel/php"
-    },
-    "api/get_users.php": {
-      "runtime": "@vercel/php"
-    },
-    "api/get_medicines.php": {
-      "runtime": "@vercel/php"
-    },
-    "api/get_all_diary.php": {
-      "runtime": "@vercel/php"
-    },
-    "api/delete_admin_diary.php": {
-      "runtime": "@vercel/php"
+    "api/login.js": {
+      "runtime": "@vercel/node"
     }
   },
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "source": "/api/login.php",
+      "destination": "/api/login.js"
     },
     {
       "source": "/admin/(.*)",
