@@ -31,7 +31,7 @@ async function handleLogin(req, res) {
     }
 
     const result = await query(
-      'SELECT id, name, username, password, role FROM users WHERE username = $1',
+      'SELECT id, name, username, password, role FROM users WHERE username = ?',
       [username]
     );
 
