@@ -1,10 +1,17 @@
 <?php
 class Database {
-    private $host = "mysql-erucare.alwaysdata.net";
-    private $db_name = "erucare_tracker";
-    private $username = "erucare";
-    private $password = "Mickeyandmouse152526.";
+    private $host;
+    private $db_name;
+    private $username;
+    private $password;
     private $conn;
+
+    public function __construct() {
+        $this->host = $_ENV['DB_HOST'] ?? getenv('DB_HOST') ?: "mysql-erucare.alwaysdata.net";
+        $this->db_name = $_ENV['DB_NAME'] ?? getenv('DB_NAME') ?: "erucare_tracker";
+        $this->username = $_ENV['DB_USER'] ?? getenv('DB_USER') ?: "erucare";
+        $this->password = $_ENV['DB_PASSWORD'] ?? getenv('DB_PASSWORD') ?: "Mickeyandmouse152526.";
+    }
 
     public function getConnection() {
         $this->conn = null;
