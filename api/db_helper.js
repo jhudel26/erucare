@@ -1,36 +1,33 @@
-const mysql = require('mysql2/promise');
+const { createClient } = require('@vercel/postgres');
 
-// Create a singleton pool to be reused across function calls
-let pool;
+// Create a singleton client to be reused across function calls
+let client;
 
-function getPool() {
-  if (!pool) {
-    pool = mysql.createPool({
-      host: process.env.DB_HOST || 'mysql-erucare.alwaysdata.net',
-      user: process.env.DB_USER || 'erucare',
-      password: process.env.DB_PASSWORD || 'Mickeyandmouse152526.',
-      database: process.env.DB_NAME || 'erucare_tracker',
-      waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0
-    });
+function getClient() {
+  if (!client) {
+    client = createClient();
   }
-  return pool;
+  return client;
 }
 
 module.exports = {
-  getPool,
-  // Helper to run a query using the pooled connection (MySQL uses ? as placeholder)
-  query: async (text, params) => {
-    // Convert PostgreSQL $1, $2 style to MySQL ? style if needed
-    // In our case, we'll manually fix the queries in the API handlers
-    const pool = getPool();
-    const [rows, fields] = await pool.execute(text, params);
-    return { rows, rowCount: rows.length };
+  getClient,
+  // Helper to run a query using the PostgreSQL client
+  query: async (text, params = []) => {
+    const client = getClient();
+    await client.connect();
+
+    try {
+      const result = await client.query(text, params);
+      return { rows: result.rows, rowCount: result.rowCount };
+    } finally {
+      // Don't close the client as it's reused across function calls
+    }
   },
-  // Helper for transactions
-  getClient: async () => {
-    const pool = getPool();
-    return await pool.getConnection();
+  // Helper for getting a fresh client (for transactions)
+  getFreshClient: async () => {
+    const freshClient = createClient();
+    await freshClient.connect();
+    return freshClient;
   }
 };

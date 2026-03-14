@@ -32,7 +32,7 @@ module.exports = async function handler(req, res) {
         return res.status(400).json({ success: false, message: 'Username and password are required' });
       }
 
-      const result = await query('SELECT id, name, username, password, role FROM users WHERE username = ?', [username]);
+      const result = await query('SELECT id, name, username, password, role FROM users WHERE username = $1', [username]);
 
       if (!result || !result.rows || result.rows.length === 0) {
         return res.status(401).json({ success: false, message: 'Invalid username or password' });
@@ -41,12 +41,16 @@ module.exports = async function handler(req, res) {
       const user = result.rows[0];
       let isMatch = false;
 
-      // Check Bcrypt (PHP format)
+      // Check Bcrypt (PHP format) - use sync version for compatibility
       if (user.password && user.password.startsWith('$2')) {
-        isMatch = bcrypt.compareSync(password, user.password);
+        try {
+          isMatch = bcrypt.compareSync(password, user.password);
+        } catch (bcryptError) {
+          console.log('Bcrypt verification failed, trying fallback:', bcryptError.message);
+        }
       }
-      
-      // Fallback to SHA256
+
+      // Fallback to SHA256 if bcrypt fails
       if (!isMatch) {
         const hash = crypto.createHash('sha256').update(password).digest('hex');
         isMatch = (user.password === hash);
