@@ -3,30 +3,17 @@
     {
       "source": "/api/login.php",
       "destination": "/api/login.js"
-    },
+    }
+  ],
+  "headers": [
     {
       "source": "/manifest.json",
-      "destination": "/public/manifest.json"
-    },
-    {
-      "source": "/service-worker.js",
-      "destination": "/public/service-worker.js"
-    },
-    {
-      "source": "/assets/(.*)",
-      "destination": "/public/assets/$1"
-    },
-    {
-      "source": "/admin/(.*)",
-      "destination": "/admin/$1"
-    },
-    {
-      "source": "/user/(.*)",
-      "destination": "/user/$1"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/public/$1"
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        }
+      ]
     }
   ]
 }
