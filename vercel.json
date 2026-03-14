@@ -5,6 +5,18 @@
       "destination": "/api/login.js"
     },
     {
+      "source": "/manifest.json",
+      "destination": "/public/manifest.json"
+    },
+    {
+      "source": "/service-worker.js",
+      "destination": "/public/service-worker.js"
+    },
+    {
+      "source": "/assets/(.*)",
+      "destination": "/public/assets/$1"
+    },
+    {
       "source": "/admin/(.*)",
       "destination": "/admin/$1"
     },
