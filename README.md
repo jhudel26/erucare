@@ -74,36 +74,36 @@ A comprehensive Progressive Web App (PWA) for pregnancy tracking with medicine m
    npm run deploy
    ```
 
-## API Endpoints (Vercel Functions)
+## API Endpoints (Vercel Functions - Consolidated for Hobby Plan)
 
-All endpoints are located in the `/api/` directory as `.js` files.
+The API is consolidated into 3 main functions to comply with Vercel's Hobby plan limits (max 12 functions). All legacy endpoints are automatically rewritten to these handlers via `vercel.json`.
 
-### Authentication
-- `POST /api/login.js` - User login
-- `POST /api/logout.js` - User logout
+### 🔐 Authentication (`/api/auth.js`)
+- `POST /api/login.js` (Legacy) -> `action=login`
+- `POST /api/logout.js` (Legacy) -> `action=logout`
 
-### Admin Only
-- `POST /api/add_user.js` - Add new user
-- `POST /api/add_medicine.js` - Add medicine
-- `POST /api/assign_medicine.js` - Assign medicine to user
-- `GET /api/get_admin_stats.js` - Get admin statistics
-- `GET /api/get_users.js` - Get all users
-- `GET /api/get_medicines.js` - Get all medicines
-- `GET /api/get_all_diary.js` - Get all diary entries
-- `POST /api/delete_admin_diary.js` - Delete diary entry (admin)
+### 🛡️ Admin Operations (`/api/admin.js`)
+- `GET /api/get_admin_stats.js` -> `action=get_stats`
+- `GET /api/get_users.js` -> `action=get_users`
+- `POST /api/add_user.js` -> `action=add_user`
+- `GET /api/get_medicines.js` -> `action=get_medicines`
+- `POST /api/add_medicine.js` -> `action=add_medicine`
+- `POST /api/assign_medicine.js` -> `action=assign_medicine`
+- `GET /api/get_all_diary.js` -> `action=get_all_diary`
+- `POST /api/delete_admin_diary.js` -> `action=delete_diary`
 
-### User Functions
-- `GET /api/get_user_medicines.js` - Get user medicines
-- `POST /api/take_medicine.js` - Take medicine
-- `GET /api/get_logs.js` - Get medicine logs
-- `POST /api/add_diary.js` - Add diary entry
-- `GET /api/get_diary.js` - Get diary entries
-- `POST /api/delete_diary.js` - Delete diary entry (user)
+### 👤 User Operations (`/api/user.js`)
+- `GET /api/get_diary.js` -> `action=get_diary`
+- `POST /api/add_diary.js` -> `action=add_diary`
+- `POST /api/delete_diary.js` -> `action=delete_diary`
+- `GET /api/get_user_medicines.js` -> `action=get_medicines`
+- `POST /api/take_medicine.js` -> `action=take_medicine`
+- `GET /api/get_logs.js` -> `action=get_logs`
 
 ## Project Structure
 - `/admin/` - Admin interface HTML files
-- `/api/` - Vercel Serverless Functions (Node.js)
+- `/api/` - Consolidated Vercel Serverless Functions (Node.js)
 - `/public/` - Static assets, manifest, and service worker
 - `/user/` - User interface HTML files
 - `package.json` - Node.js dependencies and scripts
-- `vercel.json` - Vercel configuration and rewrites
+- `vercel.json` - Vercel configuration, rewrites, and caching headers
