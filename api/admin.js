@@ -1,5 +1,6 @@
 const { query } = require('./db_helper');
 const crypto = require('crypto');
+const bcrypt = require('bcryptjs');
 
 module.exports = async function handler(req, res) {
   try {
@@ -58,7 +59,10 @@ async function handleGetUsers(req, res) {
 
 async function handleAddUser(req, res) {
   const { name, username, password, role } = req.body || {};
-  const hash = crypto.createHash('sha256').update(password).digest('hex');
+  // Use Bcrypt (consistent with original PHP and more secure)
+  const salt = bcrypt.genSaltSync(10);
+  const hash = bcrypt.hashSync(password, salt);
+  
   try {
     await query('INSERT INTO users (name, username, password, role) VALUES (?, ?, ?, ?)', [name, username, hash, role]);
     return res.status(201).json({ success: true, message: 'User created' });

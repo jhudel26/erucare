@@ -1,5 +1,6 @@
 const { query } = require('./db_helper');
 const crypto = require('crypto');
+const bcrypt = require('bcryptjs');
 
 module.exports = async function handler(req, res) {
   try {
@@ -51,9 +52,24 @@ async function handleLogin(req, res) {
   }
 
   const user = result.rows[0];
-  const hash = crypto.createHash('sha256').update(password).digest('hex');
   
-  if (user.password !== hash) {
+  // Try Bcrypt first (Original PHP format: $2y$...)
+  let isMatch = false;
+  if (user.password && user.password.startsWith('$2')) {
+    try {
+      isMatch = bcrypt.compareSync(password, user.password);
+    } catch (e) {
+      console.error('Bcrypt compare error:', e);
+    }
+  }
+  
+  // Fallback to SHA256 (Migration format) if Bcrypt didn't match
+  if (!isMatch) {
+    const hash = crypto.createHash('sha256').update(password).digest('hex');
+    isMatch = (user.password === hash);
+  }
+  
+  if (!isMatch) {
     return res.status(401).json({ success: false, message: 'Invalid username or password' });
   }
 
