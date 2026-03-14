@@ -10,6 +10,7 @@
     { "source": "/icons/icon-512.png", "destination": "/public/assets/icons/icon-512x512.png" },
     { "source": "/icons/(.*)", "destination": "/public/assets/icons/$1" },
 
+    { "source": "/api/health.js", "destination": "/api/health.js" },
     { "source": "/api/login.js", "destination": "/api/auth.js?action=login" },
     { "source": "/api/logout.js", "destination": "/api/auth.js?action=logout" },
     
