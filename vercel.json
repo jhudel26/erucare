@@ -1,7 +1,7 @@
 {
   "functions": {
     "api/**/*.php": {
-      "runtime": "php"
+      "runtime": "now-php@3.0.0"
     }
   },
   "rewrites": [
