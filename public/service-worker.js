@@ -38,21 +38,16 @@ self.addEventListener('fetch', function(event) {
         if (response) {
           return response;
         }
-        return fetch(event.request).then(
-          function(response) {
-            if(!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-            var responseToCache = response.clone();
-            caches.open(CACHE_NAME)
-              .then(function(cache) {
-                cache.put(event.request, responseToCache);
-              });
-            return response;
+        return fetch(event.request).catch(function(error) {
+          // Return a basic offline page for failed requests
+          if (event.request.destination === 'document') {
+            return caches.match('/login.html');
           }
-        );
+          console.log('Fetch failed:', error);
+          return new Response('Offline', { status: 503, statusText: 'Service Unavailable' });
+        });
       })
-    );
+  );
 });
 
 self.addEventListener('activate', function(event) {
